@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { createProperty, getAllProperties, deletePropertyById } from './propertyAPI';
+import { createProperty, getAllProperties} from './propertyAPI';
 
 const initialState = {
   properties: [],
