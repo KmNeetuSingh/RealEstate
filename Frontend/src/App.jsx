@@ -1,30 +1,29 @@
-import React from 'react'
+import React from 'react';
+import { Routes, Route } from 'react-router-dom';
+import Login from './components/Login';
+import Register from './components/Register';
+import Dashboard from './components/Dashboard';
+import PropertyList from './components/PropertyList';
+import AddProperty from './components/AddProperty';
+import Navbar from './components/Navbar';
+import PrivateRoute from './utils/PrivateRoute';
 
-function App() {
+const Fallback = () => <div>Welcome! Please log in.</div>; // Simple fallback component
+
+const App = () => {
   return (
-    <div className="min-h-screen bg-gray-100">
-      <header className="bg-white shadow-md p-4 flex justify-between items-center">
-        <h1 className="text-2xl font-bold text-blue-600">RealEstatePro</h1>
-        <nav className="space-x-4">
-          <a href="#" className="text-gray-600 hover:text-blue-600">Home</a>
-          <a href="#" className="text-gray-600 hover:text-blue-600">Properties</a>
-          <a href="#" className="text-gray-600 hover:text-blue-600">Contact</a>
-        </nav>
-      </header>
+    <>
+      <Navbar />
+      <Routes>
+        <Route path="/" element={<Fallback />} /> {/* Render a fallback component */}
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/dashboard" element={<PrivateRoute><Dashboard /></PrivateRoute>} />
+        <Route path="/properties" element={<PrivateRoute><PropertyList /></PrivateRoute>} />
+        <Route path="/add-property" element={<PrivateRoute><AddProperty /></PrivateRoute>} />
+      </Routes>
+    </>
+  );
+};
 
-      <main className="p-8">
-        <section className="text-center">
-          <h2 className="text-4xl font-bold mb-4">Find Your Dream Home</h2>
-          <p className="text-gray-600 mb-6">Search through thousands of properties available at your fingertips.</p>
-          <button className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">Browse Listings</button>
-        </section>
-      </main>
-
-      <footer className="bg-white shadow-inner p-4 text-center mt-auto">
-        <p className="text-sm text-gray-500">&copy; 2025 RealEstatePro. All rights reserved.</p>
-      </footer>
-    </div>
-  )
-}
-
-export default App
+export default App;

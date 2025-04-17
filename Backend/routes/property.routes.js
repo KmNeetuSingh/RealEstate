@@ -7,3 +7,5 @@ router.post("/", authMiddleware, createProperty);
 router.get("/", getAllProperties);
 
 module.exports = router;
+
+              

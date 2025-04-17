@@ -2,12 +2,20 @@ require("dotenv").config();
 
 const express = require("express");
 const mongoose = require("mongoose");
+const cors = require("cors"); // Import cors package
 const authRoutes = require("./routes/auth.routes");
 const propertyRoutes = require("./routes/property.routes");
 const adminRoutes = require("./routes/admin.routes");
 const connection = require("./config/db"); // ✅ import DB connection
 
 const app = express();
+
+// Enable CORS (allow all origins, adjust as needed)
+app.use(cors({
+  origin: 'http://localhost:5173', // Frontend origin (adjust if needed)
+  methods: ['GET', 'POST', 'PUT', 'DELETE'], // Allow methods you need
+  allowedHeaders: ['Content-Type', 'Authorization'], // Allow headers you need
+}));
 
 // Middleware
 app.use(express.json());
