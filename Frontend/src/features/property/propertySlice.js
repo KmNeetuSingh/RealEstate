@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { createProperty, getAllProperties } from './propertyAPI';
+import { createProperty, getAllProperties, deletePropertyById } from './propertyAPI';
 
 const initialState = {
   properties: [],
@@ -12,9 +12,20 @@ export const fetchProperties = createAsyncThunk('property/fetchAll', async () =>
   return await getAllProperties();
 });
 
-export const addProperty = createAsyncThunk('property/add', async ({ data, token }) => {
-  return await createProperty(data, token);
-});
+export const addProperty = createAsyncThunk(
+  'property/add',
+  async ({ data, token }) => {
+    return await createProperty(data, token);
+  }
+);
+
+export const deleteProperty = createAsyncThunk(
+  'property/delete',
+  async ({ id, token }) => {
+    await deletePropertyById(id, token);
+    return id;
+  }
+);
 
 const propertySlice = createSlice({
   name: 'property',
@@ -42,6 +53,18 @@ const propertySlice = createSlice({
         state.properties.push(action.payload);
       })
       .addCase(addProperty.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message;
+      })
+
+      .addCase(deleteProperty.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(deleteProperty.fulfilled, (state, action) => {
+        state.loading = false;
+        state.properties = state.properties.filter((p) => p._id !== action.payload);
+      })
+      .addCase(deleteProperty.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message;
       });
