@@ -1,5 +1,9 @@
-import React from 'react';
+// App.jsx
+import React, { useEffect } from 'react';
 import { Routes, Route } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { loadUserFromStorage } from './features/auth/authSlice';
+
 import Login from './components/Login';
 import Register from './components/Register';
 import Dashboard from './components/Dashboard';
@@ -8,14 +12,20 @@ import AddProperty from './components/AddProperty';
 import Navbar from './components/Navbar';
 import PrivateRoute from './utils/PrivateRoute';
 
-const Fallback = () => <div>Welcome! Please log in.</div>; // Simple fallback component
+const Fallback = () => <div>Welcome! Please log in.</div>;
 
 const App = () => {
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(loadUserFromStorage());
+  }, [dispatch]);
+
   return (
     <>
       <Navbar />
       <Routes>
-        <Route path="/" element={<Fallback />} /> {/* Render a fallback component */}
+        <Route path="/" element={<Fallback />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/dashboard" element={<PrivateRoute><Dashboard /></PrivateRoute>} />

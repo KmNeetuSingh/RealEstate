@@ -12,21 +12,33 @@ const AddProperty = () => {
   const dispatch = useDispatch();
   const { loading } = useSelector((state) => state.property);
 
+  const token = localStorage.getItem('token');
+  const user = JSON.parse(localStorage.getItem('user'));
+
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const token = localStorage.getItem('token');
-    if (token) {
+
+    if (token && user?.role === 'admin') {
       dispatch(addProperty({ data: formData, token }));
       setFormData({ title: '', location: '', price: '' });
-    } else {
-      alert('Please login to add a property');
     }
   };
 
+  // ✅ If no token, prompt to login
+  if (!token) {
+    return <p className="p-6 text-red-600">Please login to access this page.</p>;
+  }
+
+  // ✅ If the user is not admin, show a message
+  if (user?.role !== 'admin') {
+    return <p className="p-6 text-red-600">Only admins can access this page.</p>;
+  }
+
+  // ✅ Render form only for admins
   return (
     <div className="p-6 text-black">
       <h1 className="text-2xl font-semibold mb-4">Add New Property</h1>
