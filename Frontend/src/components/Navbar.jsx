@@ -106,6 +106,9 @@ const Navbar = () => {
               <Link to="/register" className="hover:text-purple-900 transition">Register</Link>
             </>
           )}
+
+          {/* About link */}
+          <Link to="/about" className="hover:text-purple-900 transition">About</Link>
         </div>
       </div>
 
@@ -133,6 +136,9 @@ const Navbar = () => {
               <Link to="/register" onClick={toggleMenu} className="hover:text-purple-900">Register</Link>
             </>
           )}
+
+          {/* About link for mobile */}
+          <Link to="/about" onClick={toggleMenu} className="hover:text-purple-900">About</Link>
         </div>
       )}
     </nav>

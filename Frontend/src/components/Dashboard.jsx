@@ -6,8 +6,11 @@ const Dashboard = () => {
   return (
     <div className="p-6">
       <HomePage />
-      <h1 className="text-3xl font-semibold mt-6 mb-2">Dashboard</h1>
-      <p className="text-gray-600 mb-6">Welcome to your real estate dashboard.</p>
+
+      {/* Title: Properties */}
+      <h2 className="text-3xl font-bold text-center text-purple-800 my-8">
+        Properties
+      </h2>
 
       {/* Property Listings */}
       <PropertyList showEditDeleteButtons={false} />
