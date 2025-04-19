@@ -19,7 +19,7 @@ app.use("/api/properties", propertyRoutes);
 app.use("/api/admin", adminRoutes);
 
 // 🚀 Start Server
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT;
 app.listen(PORT, async () => {
   try {
     await connection();
