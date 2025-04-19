@@ -1,17 +1,39 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchProperties } from '../features/property/propertySlice';
+import { fetchProperties, deleteProperty } from '../features/property/propertySlice';
 import Slider from 'react-slick';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
+import toast from 'react-hot-toast';
 
 const PropertyList = () => {
   const dispatch = useDispatch();
   const { properties, loading, error } = useSelector((state) => state.property);
 
+  const user = JSON.parse(localStorage.getItem('user'));
+  const token = localStorage.getItem('token');
+
   useEffect(() => {
     dispatch(fetchProperties());
   }, [dispatch]);
+
+  useEffect(() => {
+    if (error) {
+      toast.error(error);
+    }
+  }, [error]);
+
+  const handleDelete = async (id) => {
+    const confirm = window.confirm('Are you sure you want to delete this property?');
+    if (!confirm) return;
+
+    try {
+      await dispatch(deleteProperty({ id, token })).unwrap();
+      toast.success('Property deleted successfully');
+    } catch (err) {
+      toast.error(err || 'Failed to delete property');
+    }
+  };
 
   const settings = {
     dots: true,
@@ -26,15 +48,14 @@ const PropertyList = () => {
       <h1 className="text-3xl font-semibold mb-6">All Properties</h1>
 
       {loading && <p>Loading...</p>}
-      {error && <p className="text-red-500">{error}</p>}
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {properties.map((property) => (
           <div
             key={property._id}
-            className="border rounded-lg shadow-md overflow-hidden bg-white"
+            className="border rounded-lg shadow-md overflow-hidden bg-white transition transform hover:-translate-y-1 hover:shadow-lg"
           >
-            {property.images && property.images.length > 0 && (
+            {property.images && property.images.length > 0 ? (
               <Slider {...settings}>
                 {property.images.map((img, idx) => (
                   <div key={idx}>
@@ -46,6 +67,12 @@ const PropertyList = () => {
                   </div>
                 ))}
               </Slider>
+            ) : (
+              <img
+                src="https://via.placeholder.com/600x300?text=No+Image"
+                alt="No Image"
+                className="w-full h-60 object-cover"
+              />
             )}
 
             <div className="p-4">
@@ -56,6 +83,22 @@ const PropertyList = () => {
                 ₹ {property.price?.toLocaleString()}
               </p>
               <p className="text-sm text-gray-700">{property.description}</p>
+
+              {user?.role === 'admin' && (
+                <div className="mt-4 flex gap-2">
+                  <button
+                    onClick={() => handleDelete(property._id)}
+                    className="bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700"
+                  >
+                    Delete
+                  </button>
+                  <button
+                    className="bg-yellow-500 text-white px-3 py-1 rounded hover:bg-yellow-600"
+                  >
+                    Edit
+                  </button>
+                </div>
+              )}
             </div>
           </div>
         ))}

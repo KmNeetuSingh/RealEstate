@@ -41,4 +41,35 @@ const deleteProperty = async (req, res) => {
   }
 };
 
-module.exports = { createProperty, getAllProperties, deleteProperty };
+// ✅ Update Property by ID
+const updateProperty = async (req, res) => {
+  try {
+    const property = await Property.findById(req.params.id);
+
+    if (!property) {
+      return res.status(404).json({ message: "Property not found" });
+    }
+
+    // Check ownership
+    if (property.owner.toString() !== req.user.id && req.user.role !== "admin") {
+      return res.status(403).json({ message: "Not authorized to update this property" });
+    }
+
+    const updatedProperty = await Property.findByIdAndUpdate(
+      req.params.id,
+      req.body,
+      { new: true, runValidators: true }
+    );
+
+    res.json(updatedProperty);
+  } catch (err) {
+    res.status(500).json({ message: "Failed to update property", error: err.message });
+  }
+};
+
+module.exports = {
+  createProperty,
+  getAllProperties,
+  deleteProperty,
+  updateProperty, // ✅ Export it
+};
