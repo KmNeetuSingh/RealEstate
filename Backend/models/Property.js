@@ -5,6 +5,8 @@ const propertySchema = new mongoose.Schema({
   description: String,
   price: Number,
   location: String,
+  type: String, // 🆕 Add this
+  images: [String], // 🆕 Add this
   owner: { type: mongoose.Schema.Types.ObjectId, ref: "User" }
 }, { timestamps: true });
 
