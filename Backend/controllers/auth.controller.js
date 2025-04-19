@@ -1,42 +1,43 @@
 const jwt = require("jsonwebtoken");
-const bcrypt = require("bcryptjs");
 const User = require("../models/User");
 
 // Register Controller
 const register = async (req, res) => {
   try {
-    console.log("Register endpoint hit:", req.body);
+    console.log("➡️ Register Request Body:", req.body);
+
     const { name, email, password, role } = req.body;
 
-    // Normalize email
-    const normalizedEmail = email.trim().toLowerCase();
+    if (!name || !email || !password) {
+      console.log("❌ Missing fields during registration");
+      return res.status(400).json({ message: "All fields are required" });
+    }
 
-    // Check if the user already exists
+    const normalizedEmail = email.trim().toLowerCase();
+    console.log("📩 Normalized Email:", normalizedEmail);
+
     const existingUser = await User.findOne({ email: normalizedEmail });
+
     if (existingUser) {
+      console.log("⚠️ Email already registered:", normalizedEmail);
       return res.status(400).json({ message: "Email already registered" });
     }
 
-    // Hash password
-    const hashedPassword = await bcrypt.hash(password, 10);
-
-    // Create the user
     const user = await User.create({
-      name,
-      email: normalizedEmail, // Store normalized email
-      password: hashedPassword,
-      role: role || "user", // Default to 'user' if no role provided
+      name: name.trim(),
+      email: normalizedEmail,
+      password: password.trim(), // 👈 Pass plain password, schema will hash it
+      role: role || "user",
     });
-    console.log("User registered:", user);
 
-    // Create JWT token
+    console.log("✅ User Created:", user);
+
     const token = jwt.sign(
       { id: user._id, role: user.role },
-      process.env.JWT_SECRET,
-      { expiresIn: process.env.JWT_EXPIRES_IN }
+      process.env.JWT_SECRET || "fallbacksecret",
+      { expiresIn: process.env.JWT_EXPIRES_IN || "1d" }
     );
 
-    // Respond with user details and token
     res.status(201).json({
       message: "User registered successfully",
       user: {
@@ -48,6 +49,7 @@ const register = async (req, res) => {
       token,
     });
   } catch (err) {
+    console.error("🔥 Registration error:", err);
     if (err.code === 11000) {
       return res.status(400).json({ message: "Email already registered" });
     }
@@ -57,54 +59,46 @@ const register = async (req, res) => {
 
 // Login Controller
 const login = async (req, res) => {
-  const { email, password, role } = req.body;
-
   try {
-    console.log("Email received in login:", email);
+    console.log("➡️ Login Request Body:", req.body);
 
-    // Check if email is provided
-    if (!email || !email.trim()) {
-      return res.status(400).json({ message: "Email is required" });
+    const { email, password, role } = req.body;
+
+    if (!email || !password) {
+      console.log("❌ Missing email or password during login");
+      return res.status(400).json({ message: "Email and password are required" });
     }
 
-    // Normalize email
     const normalizedEmail = email.trim().toLowerCase();
+    console.log("📩 Normalized Email:", normalizedEmail);
 
-    // Find the user by normalized email
     const user = await User.findOne({ email: normalizedEmail });
-    console.log("User found:", user);
 
     if (!user) {
+      console.log("❌ No user found with this email");
       return res.status(401).json({ message: "Invalid credentials" });
     }
 
-    // Check if role is provided
-    if (!role) {
-      return res.status(400).json({ message: "Role is required" });
-    }
-
-    // Role must match
-    if (user.role !== role) {
-      console.log("Role mismatch. Expected:", user.role, "Received:", role);
+    // ✅ Check role if provided
+    if (role && user.role !== role) {
+      console.log("⛔ Role mismatch. Expected:", user.role, "Provided:", role);
       return res.status(403).json({ message: "Access denied for this user type" });
     }
 
-    // Check if password matches
-    const isMatch = await bcrypt.compare(password, user.password);
-    console.log("Password match:", isMatch);
+    const isMatch = await user.comparePassword(password.trim()); // 👈 Use model method
+    console.log("✅ Password Match Result:", isMatch);
 
     if (!isMatch) {
+      console.log("❌ Passwords do not match");
       return res.status(401).json({ message: "Invalid credentials" });
     }
 
-    // Generate JWT token
     const token = jwt.sign(
       { id: user._id, role: user.role },
-      process.env.JWT_SECRET,
-      { expiresIn: process.env.JWT_EXPIRES_IN }
+      process.env.JWT_SECRET || "fallbacksecret",
+      { expiresIn: process.env.JWT_EXPIRES_IN || "1d" }
     );
 
-    // Respond with user details and token
     res.status(200).json({
       message: "Login successful",
       user: {
@@ -116,7 +110,7 @@ const login = async (req, res) => {
       token,
     });
   } catch (err) {
-    console.error("Login error:", err);
+    console.error("🔥 Login error:", err);
     res.status(500).json({ message: "Login error", error: err.message });
   }
 };
