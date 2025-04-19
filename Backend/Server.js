@@ -1,48 +1,43 @@
-require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
+const dotenv = require("dotenv");
 const authRoutes = require("./routes/auth.routes");
-const propertyRoutes = require("./routes/property.routes");
-const adminRoutes = require("./routes/admin.routes");
+const taskRoutes = require("./routes/task.routes");
 const connection = require("./config/db");
+const teamRoutes = require("./routes/team.routes");
 
+// ✅ Load .env
+dotenv.config();
+
+// Initialize express app
 const app = express();
 
-// 🔁 CORS Configuration
-const devOrigins = ["http://localhost:5173"];
-const prodOrigins = ["https://real-estate-wnzo.vercel.app"];
-const allowedOrigins = process.env.NODE_ENV === "production" ? prodOrigins : devOrigins;
+// Use CORS globally
+app.use(cors());
 
-app.use(
-  cors({
-    origin: function (origin, callback) {
-      if (!origin || allowedOrigins.includes(origin)) {
-        callback(null, true);
-      } else {
-        callback(new Error("Not allowed by CORS"));
-      }
-    },
-    methods: ["GET", "POST", "PUT", "DELETE"],
-    allowedHeaders: ["Content-Type", "Authorization"],
-    credentials: true,
-  })
-);
-
+// Parse JSON bodies
 app.use(express.json());
 
-// 🔗 Routes
+// Define routes
 app.use("/api/auth", authRoutes);
-app.use("/api/properties", propertyRoutes);
-app.use("/api/admin", adminRoutes);
+app.use("/api/tasks", taskRoutes);
+app.use("/api/teams", teamRoutes);
 
-// 🚀 Start Server
-const PORT = process.env.PORT || 3000;
+// Health check route
+app.get("/health", (req, res) => {
+  res.status(200).send("Server running! Health Check Done");
+});
+
+// Set the port
+const PORT = process.env.PORT || 5000;
+
+// Start the server
 app.listen(PORT, async () => {
   try {
     await connection();
     console.log("✅ MongoDB connected");
     console.log(`🚀 Server running on port ${PORT}`);
   } catch (err) {
-    console.error("❌ DB connection failed:", err.message);
+    console.log("❌ DB connection failed:", err.message);
   }
 });
