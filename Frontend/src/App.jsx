@@ -25,10 +25,10 @@ const App = () => {
     <>
       <Navbar />
       <Routes>
-        <Route path="/" element={<Fallback />} />
+        {/* <Route path="/" element={<Fallback />} /> */}
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
-        <Route path="/dashboard" element={<PrivateRoute><Dashboard /></PrivateRoute>} />
+        <Route path="/" element={<Dashboard />} />
         <Route path="/properties" element={<PrivateRoute><PropertyList /></PrivateRoute>} />
         <Route path="/add-property" element={<PrivateRoute><AddProperty /></PrivateRoute>} />
       </Routes>

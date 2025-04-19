@@ -1,34 +1,29 @@
 require("dotenv").config();
 
 const express = require("express");
-const mongoose = require("mongoose");
-const cors = require("cors"); // Import cors package
+const cors = require("cors");
 const authRoutes = require("./routes/auth.routes");
 const propertyRoutes = require("./routes/property.routes");
 const adminRoutes = require("./routes/admin.routes");
-const connection = require("./config/db"); // ✅ import DB connection
+const connection = require("./config/db");
 
 const app = express();
 
-// Enable CORS (allow all origins, adjust as needed)
-app.use(cors({
-  origin: 'http://localhost:5173', // Frontend origin (adjust if needed)
-  methods: ['GET', 'POST', 'PUT', 'DELETE'], // Allow methods you need
-  allowedHeaders: ['Content-Type', 'Authorization'], // Allow headers you need
-}));
-
 // Middleware
+app.use(cors({
+  origin: "http://localhost:5173", // Frontend origin
+  methods: ["GET", "POST", "PUT", "DELETE"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+}));
 app.use(express.json());
 
 // Routes
-app.use("/api/auth", authRoutes);
+app.use("/api/auth", authRoutes);       // 👉 Includes /register, /login, /profile (protected)
 app.use("/api/properties", propertyRoutes);
 app.use("/api/admin", adminRoutes);
 
-// ✅ Declare PORT
+// Start Server
 const PORT = process.env.PORT || 3000;
-
-// ✅ Start server after DB connection
 app.listen(PORT, async () => {
   try {
     await connection();

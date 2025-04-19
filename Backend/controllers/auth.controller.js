@@ -115,4 +115,23 @@ const login = async (req, res) => {
   }
 };
 
-module.exports = { register, login };
+// Get Profile Controller
+const getProfile = async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id).select('-password');
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    res.status(200).json({
+      message: "Profile fetched successfully",
+      user,
+    });
+  } catch (err) {
+    console.error("🔥 Profile fetch error:", err);
+    res.status(500).json({ message: "Failed to fetch profile", error: err.message });
+  }
+};
+
+module.exports = { register, login, getProfile };
+
