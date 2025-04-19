@@ -1,4 +1,4 @@
-require("dotenv").config();
+require("dotenv").config(); // Make sure dotenv is loaded first
 const express = require("express");
 const cors = require("cors");
 const authRoutes = require("./routes/auth.routes");
@@ -8,10 +8,7 @@ const connection = require("./config/db");
 
 const app = express();
 
-// ✅ Load .env
-dotenv.config();
-
-// Use CORS globally (accepts requests from any origin)
+// Use CORS globally
 app.use(cors());
 
 app.use(express.json());
