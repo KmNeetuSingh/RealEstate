@@ -18,7 +18,7 @@ app.use(cors({
 app.use(express.json());
 
 // Routes
-app.use("/api/auth", authRoutes);       // 👉 Includes /register, /login, /profile (protected)
+app.use("/api/auth", authRoutes);    // Authentication routes
 app.use("/api/properties", propertyRoutes);
 app.use("/api/admin", adminRoutes);
 
