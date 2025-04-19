@@ -5,16 +5,17 @@ const PrivateRoute = ({ children, role }) => {
   const token = localStorage.getItem('token');
   const user = JSON.parse(localStorage.getItem('user'));
 
+  // If no token, redirect to login page
   if (!token) {
     return <Navigate to="/login" />;
   }
 
-  // If role prop is provided, check user role
-  if (role && user?.role !== role) {
-    return <Navigate to="/unauthorized" />; // Or a NotAuthorized page
+  // If a role is provided, check user's role
+  if (role && (!user || user?.role !== role)) {
+    return <Navigate to="/unauthorized" />;
   }
 
-  return children;
+  return children; // If authenticated and role matches, render the children
 };
 
 export default PrivateRoute;

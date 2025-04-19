@@ -5,17 +5,17 @@ import Slider from 'react-slick';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import toast from 'react-hot-toast';
-import EditPropertyModal from './EditProperty'; // ✅ Import the modal
+import EditPropertyModal from './EditProperty'; // Import the modal
 
-const PropertyList = () => {
+const PropertyList = ({ showEditDeleteButtons = true }) => {
   const dispatch = useDispatch();
   const { properties, loading, error } = useSelector((state) => state.property);
 
   const user = JSON.parse(localStorage.getItem('user'));
   const token = localStorage.getItem('token');
 
-  const [editModalOpen, setEditModalOpen] = useState(false);         // ✅ Modal state
-  const [selectedProperty, setSelectedProperty] = useState(null);    // ✅ Selected property
+  const [editModalOpen, setEditModalOpen] = useState(false);
+  const [selectedProperty, setSelectedProperty] = useState(null);
 
   useEffect(() => {
     dispatch(fetchProperties());
@@ -54,10 +54,7 @@ const PropertyList = () => {
 
   return (
     <div className="p-6">
-      <h1 className="text-3xl font-semibold mb-6">All Properties</h1>
-
       {loading && <p>Loading...</p>}
-
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {properties.map((property) => (
           <div
@@ -93,7 +90,7 @@ const PropertyList = () => {
               </p>
               <p className="text-sm text-gray-700">{property.description}</p>
 
-              {user?.role === 'admin' && (
+              {showEditDeleteButtons && user?.role === 'admin' && (
                 <div className="mt-4 flex gap-2">
                   <button
                     onClick={() => handleDelete(property._id)}
@@ -102,7 +99,7 @@ const PropertyList = () => {
                     Delete
                   </button>
                   <button
-                    onClick={() => openEditModal(property)}  // ✅ Open modal on click
+                    onClick={() => openEditModal(property)} // Open modal on click
                     className="bg-yellow-500 text-white px-3 py-1 rounded hover:bg-yellow-600"
                   >
                     Edit
@@ -114,7 +111,6 @@ const PropertyList = () => {
         ))}
       </div>
 
-      {/* ✅ Edit Property Modal */}
       <EditPropertyModal
         isOpen={editModalOpen}
         onClose={() => setEditModalOpen(false)}
