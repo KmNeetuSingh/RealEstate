@@ -1,7 +1,8 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 
-const API_URL = 'http://localhost:3000/api/auth';
+// ✅ Use environment variable
+const API_URL = import.meta.env.VITE_API_URL;
 
 const initialState = {
   user: JSON.parse(localStorage.getItem('user')) || null,

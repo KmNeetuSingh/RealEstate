@@ -1,8 +1,9 @@
 import axios from 'axios';
 
-const API_URL = 'http://localhost:3000/api/properties';
+// ✅ Use environment variable from .env
+const API_URL = import.meta.env.VITE_PROPERTY_API_URL;
 
-// Create a new property
+// 🔹 Create a new property
 export const createProperty = async (propertyData, token) => {
   const config = {
     headers: {
@@ -13,13 +14,13 @@ export const createProperty = async (propertyData, token) => {
   return response.data;
 };
 
-// Fetch all properties
+// 🔹 Fetch all properties
 export const getAllProperties = async () => {
   const response = await axios.get(API_URL);
   return response.data;
 };
 
-// ✅ Delete a property
+// 🔹 Delete a property
 export const deletePropertyAPI = async (id, token) => {
   const config = {
     headers: {
@@ -30,6 +31,7 @@ export const deletePropertyAPI = async (id, token) => {
   return response.data;
 };
 
+// 🔹 Update a property
 export const updatePropertyAPI = async (id, data, token) => {
   const config = {
     headers: {
