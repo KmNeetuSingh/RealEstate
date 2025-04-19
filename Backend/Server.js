@@ -1,5 +1,4 @@
 require("dotenv").config();
-
 const express = require("express");
 const cors = require("cors");
 const authRoutes = require("./routes/auth.routes");
@@ -9,20 +8,34 @@ const connection = require("./config/db");
 
 const app = express();
 
-// Middleware
-app.use(cors({
-  origin: "http://localhost:5173", // Frontend origin
-  methods: ["GET", "POST", "PUT", "DELETE"],
-  allowedHeaders: ["Content-Type", "Authorization"],
-}));
+// 🔁 CORS Configuration
+const devOrigins = ["http://localhost:5173"];
+const prodOrigins = ["https://real-estate-wnzo.vercel.app"];
+const allowedOrigins = process.env.NODE_ENV === "production" ? prodOrigins : devOrigins;
+
+app.use(
+  cors({
+    origin: function (origin, callback) {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+    credentials: true,
+  })
+);
+
 app.use(express.json());
 
-// Routes
-app.use("/api/auth", authRoutes);    // Authentication routes
+// 🔗 Routes
+app.use("/api/auth", authRoutes);
 app.use("/api/properties", propertyRoutes);
 app.use("/api/admin", adminRoutes);
 
-// Start Server
+// 🚀 Start Server
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, async () => {
   try {
@@ -30,6 +43,6 @@ app.listen(PORT, async () => {
     console.log("✅ MongoDB connected");
     console.log(`🚀 Server running on port ${PORT}`);
   } catch (err) {
-    console.log("❌ DB connection failed:", err.message);
+    console.error("❌ DB connection failed:", err.message);
   }
 });
