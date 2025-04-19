@@ -1,13 +1,19 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { createProperty, getAllProperties, deletePropertyAPI } from './propertyAPI';
+import {
+  createProperty,
+  getAllProperties,
+  deletePropertyAPI,
+  updatePropertyAPI, // ✅ Import update API
+} from './propertyAPI';
 
+// ✅ Initial state
 const initialState = {
   properties: [],
   loading: false,
   error: null,
 };
 
-// Thunks
+// ✅ Thunks
 export const fetchProperties = createAsyncThunk('property/fetchAll', async () => {
   return await getAllProperties();
 });
@@ -19,7 +25,6 @@ export const addProperty = createAsyncThunk(
   }
 );
 
-// ✅ New: Delete property thunk
 export const deleteProperty = createAsyncThunk(
   'property/delete',
   async ({ id, token }, thunkAPI) => {
@@ -32,6 +37,20 @@ export const deleteProperty = createAsyncThunk(
   }
 );
 
+// ✅ New: Update property thunk
+export const updateProperty = createAsyncThunk(
+  'property/update',
+  async ({ id, data, token }, thunkAPI) => {
+    try {
+      const updated = await updatePropertyAPI(id, data, token);
+      return updated;
+    } catch (err) {
+      return thunkAPI.rejectWithValue(err.response?.data?.message || 'Failed to update property');
+    }
+  }
+);
+
+// ✅ Slice
 const propertySlice = createSlice({
   name: 'property',
   initialState,
@@ -62,11 +81,20 @@ const propertySlice = createSlice({
         state.error = action.error.message;
       })
 
-      // ✅ Delete case handling
       .addCase(deleteProperty.fulfilled, (state, action) => {
         state.properties = state.properties.filter(p => p._id !== action.payload);
       })
       .addCase(deleteProperty.rejected, (state, action) => {
+        state.error = action.payload;
+      })
+
+      // ✅ Update case handling
+      .addCase(updateProperty.fulfilled, (state, action) => {
+        state.properties = state.properties.map((property) =>
+          property._id === action.payload._id ? action.payload : property
+        );
+      })
+      .addCase(updateProperty.rejected, (state, action) => {
         state.error = action.payload;
       });
   },

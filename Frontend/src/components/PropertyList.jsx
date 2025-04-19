@@ -1,10 +1,11 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchProperties, deleteProperty } from '../features/property/propertySlice';
 import Slider from 'react-slick';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import toast from 'react-hot-toast';
+import EditPropertyModal from './EditProperty'; // ✅ Import the modal
 
 const PropertyList = () => {
   const dispatch = useDispatch();
@@ -12,6 +13,9 @@ const PropertyList = () => {
 
   const user = JSON.parse(localStorage.getItem('user'));
   const token = localStorage.getItem('token');
+
+  const [editModalOpen, setEditModalOpen] = useState(false);         // ✅ Modal state
+  const [selectedProperty, setSelectedProperty] = useState(null);    // ✅ Selected property
 
   useEffect(() => {
     dispatch(fetchProperties());
@@ -33,6 +37,11 @@ const PropertyList = () => {
     } catch (err) {
       toast.error(err || 'Failed to delete property');
     }
+  };
+
+  const openEditModal = (property) => {
+    setSelectedProperty(property);
+    setEditModalOpen(true);
   };
 
   const settings = {
@@ -93,6 +102,7 @@ const PropertyList = () => {
                     Delete
                   </button>
                   <button
+                    onClick={() => openEditModal(property)}  // ✅ Open modal on click
                     className="bg-yellow-500 text-white px-3 py-1 rounded hover:bg-yellow-600"
                   >
                     Edit
@@ -103,6 +113,14 @@ const PropertyList = () => {
           </div>
         ))}
       </div>
+
+      {/* ✅ Edit Property Modal */}
+      <EditPropertyModal
+        isOpen={editModalOpen}
+        onClose={() => setEditModalOpen(false)}
+        property={selectedProperty}
+        token={token}
+      />
     </div>
   );
 };

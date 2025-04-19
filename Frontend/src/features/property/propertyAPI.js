@@ -29,3 +29,13 @@ export const deletePropertyAPI = async (id, token) => {
   const response = await axios.delete(`${API_URL}/${id}`, config);
   return response.data;
 };
+
+export const updatePropertyAPI = async (id, data, token) => {
+  const config = {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  };
+  const response = await axios.put(`${API_URL}/${id}`, data, config);
+  return response.data;
+};
