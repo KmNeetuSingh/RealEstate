@@ -120,4 +120,3 @@ Have questions or suggestions?
 
 This project is licensed under the MIT License.  
 Feel free to use and customize it for your projects.
-```
