@@ -12,6 +12,7 @@ A full-stack Real Estate platform that enables **Admins** to manage properties a
 - React Router  
 - React Hot Toast  
 
+
 **Backend:**  
 - Node.js  
 - Express.js  
@@ -120,5 +121,3 @@ Have questions or suggestions?
 This project is licensed under the MIT License.  
 Feel free to use and customize it for your projects.
 ```
-
---
