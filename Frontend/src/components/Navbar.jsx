@@ -48,7 +48,7 @@ const Navbar = () => {
     localStorage.removeItem('user');
     setUser(null);
     setMenuOpen(false);
-    navigate('/'); // Redirect to home page after logout
+    navigate('/');
   };
 
   const toggleMenu = () => setMenuOpen((prev) => !prev);
