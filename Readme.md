@@ -1,4 +1,4 @@
-# 🏠 RealEstate App
+# 🏠 RealEstate
 
 **RealEstate** is a full-stack property listing platform designed to streamline real estate management. It features a robust **role-based access system**, allowing **admins** to manage property listings and **users** to browse them with ease. Built with a strong focus on scalability, modern UI/UX practices, and secure authentication.
 
@@ -22,7 +22,7 @@
 
 ## 🌟 What This Application Can Do
 
-The **RealEstate App** isn't just a property listing platform—it's a complete solution for modern real estate management. Here's what makes it powerful and user-friendly:
+The **RealEstate** isn't just a property listing platform—it's a complete solution for modern real estate management. Here's what makes it powerful and user-friendly:
 
 ### 🔑 For All Users:
 - 🔍 **Browse All Listings:** Discover available properties with clean UI and responsive design.
