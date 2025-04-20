@@ -56,28 +56,28 @@ const Navbar = () => {
   const avatarLetter = user?.name?.[0]?.toUpperCase() || user?.email?.[0]?.toUpperCase() || 'U';
 
   return (
-    <nav className="bg-yellow-400 shadow-md px-4 sm:px-8 py-4">
-      <div className="flex justify-between items-center">
+    <nav className="bg-yellow-400 shadow-md px-4 sm:px-6 py-4">
+      <div className="flex justify-between items-center gap-2 sm:gap-1">
         {/* Logo */}
-        <Link to="/" className="text-purple-700 text-xl sm:text-2xl font-bold flex items-center gap-2">
+        <Link to="/" className="text-purple-700 text-xl sm:text-2xl font-bold flex items-center gap-2 mr-2">
           <span role="img" aria-label="home">🏠</span> HOMEHUNT
         </Link>
 
         {/* Desktop Nav */}
-        <div className="hidden sm:flex items-center gap-5 text-purple-800 font-medium text-sm sm:text-base">
-          <Link to="/about" className="hover:text-purple-900 transition">About</Link>
-          <Link to="/properties" className="hover:text-purple-900 transition">Properties</Link>
-          <Link to="/contact" className="hover:text-purple-900 transition">Contact</Link>
+        <div className="hidden sm:flex items-center gap-3 text-purple-800 font-medium text-sm sm:text-base">
+          <Link to="/about" className="hover:text-purple-900 transition mr-3">About</Link>
+          <Link to="/properties" className="hover:text-purple-900 transition mr-3">Properties</Link>
+          <Link to="/contact" className="hover:text-purple-900 transition mr-3">Contact</Link>
 
           {!token ? (
             <>
-              <Link to="/login" className="hover:text-purple-900 transition">Login</Link>
-              <Link to="/register" className="hover:text-purple-900 transition">Register</Link>
+              <Link to="/login" className="hover:text-purple-900 transition mr-3">Login</Link>
+              <Link to="/register" className="hover:text-purple-900 transition mr-3">Register</Link>
             </>
           ) : (
             <>
               {user?.role === 'admin' && (
-                <Link to="/add-property" className="hover:text-purple-900 transition">Add</Link>
+                <Link to="/add-property" className="hover:text-purple-900 transition mr-3">Add</Link>
               )}
 
               <div className="relative" ref={dropdownRef}>

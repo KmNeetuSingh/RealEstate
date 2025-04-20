@@ -2,12 +2,13 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getProfile } from "../features/auth/authSlice";
 import { toast } from "react-hot-toast";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import interiorBg from "../assets/interior.avif";
 import Sponsors from "../components/PresentingSponser";
 
 const HomePage = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const { user } = useSelector((state) => state.auth);
 
   const [blurEnabled, setBlurEnabled] = useState(false);
@@ -20,7 +21,6 @@ const HomePage = () => {
     const toastShown = sessionStorage.getItem("toastShown");
 
     if (!user && !toastShown) {
-      // ⏳ Wait 1 minute before locking/blur
       const timer = setTimeout(() => {
         setBlurEnabled(true);
         document.body.classList.add("overflow-hidden");
@@ -56,11 +56,10 @@ const HomePage = () => {
         });
 
         sessionStorage.setItem("toastShown", "true");
-      }, 60000); // 60 seconds
+      }, 60000);
 
       return () => clearTimeout(timer);
     } else {
-      // ✅ User is logged in → remove scroll block + blur
       setBlurEnabled(false);
       document.body.classList.remove("overflow-hidden");
     }
@@ -70,6 +69,10 @@ const HomePage = () => {
     };
   }, [user]);
 
+  const handlePropertyType = (type) => {
+    navigate(`/properties?type=${type}`);
+  };
+
   return (
     <div className={`${blurEnabled ? "filter blur-sm pointer-events-none" : ""}`}>
       {/* Hero Section */}
@@ -78,9 +81,15 @@ const HomePage = () => {
         style={{ backgroundImage: `url(${interiorBg})` }}
       >
         <div className="flex justify-center gap-20 text-purple-900 text-lg font-semibold">
-          <button className="hover:text-purple-700 transition">Apartments</button>
-          <button className="hover:text-purple-700 transition">Villas</button>
-          <button className="hover:text-purple-700 transition">Plots</button>
+          <button onClick={() => handlePropertyType("apartment")} className="hover:text-purple-700 transition">
+            Apartments
+          </button>
+          <button onClick={() => handlePropertyType("villa")} className="hover:text-purple-700 transition">
+            Villas
+          </button>
+          <button onClick={() => handlePropertyType("plot")} className="hover:text-purple-700 transition">
+            Plots
+          </button>
         </div>
       </div>
 
