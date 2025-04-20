@@ -57,7 +57,7 @@ const Register = () => {
       localStorage.setItem('role', result.payload.user.role);
 
       toast.success('🎉 Registration successful!');
-      setTimeout(() => navigate('/dashboard'), 1500);
+      setTimeout(() => navigate('/'), 1500);
     } else {
       toast.error(result.payload?.message || 'Registration failed');
     }

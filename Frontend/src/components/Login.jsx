@@ -45,12 +45,12 @@ const Login = () => {
       localStorage.setItem('user', JSON.stringify(response.payload.user));
       localStorage.setItem('token', response.payload.token);
       localStorage.setItem('role', response.payload.user.role);
-      navigate('/dashboard');
+      navigate('/');
     }
   };
 
   return (
-    <div className="relative min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-100 via-yellow-50 to-purple-200 overflow-hidden">
+    <div className="relative min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-300 via-yellow-200 to-purple-400 overflow-hidden">
       {/* ⭐ Star animations */}
       <div className="absolute top-0 left-0 w-full h-full z-0 pointer-events-none">
         {[...Array(30)].map((_, i) => (
@@ -97,7 +97,7 @@ const Login = () => {
             placeholder="Email"
             value={formData.email}
             onChange={handleChange}
-            className="w-full border border-purple-300 px-4 py-2 rounded-lg transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-purple-400"
+            className="w-full border border-purple-400 px-4 py-2 rounded-lg transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-purple-500"
             required
             autoComplete="email"
           />
@@ -109,7 +109,7 @@ const Login = () => {
               placeholder="Password"
               value={formData.password}
               onChange={handleChange}
-              className="w-full border border-purple-300 px-4 py-2 pr-10 rounded-lg transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-purple-400"
+              className="w-full border border-purple-400 px-4 py-2 pr-10 rounded-lg transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-purple-500"
               required
               autoComplete="current-password"
             />
@@ -126,7 +126,7 @@ const Login = () => {
             name="role"
             value={formData.role}
             onChange={handleChange}
-            className="w-full border border-purple-300 px-4 py-2 rounded-lg transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-purple-400"
+            className="w-full border border-purple-400 px-4 py-2 rounded-lg transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-purple-500"
           >
             <option value="user">User</option>
             <option value="admin">Admin</option>
@@ -134,7 +134,7 @@ const Login = () => {
 
           <button
             type="submit"
-            className="w-full bg-yellow-400 text-purple-800 font-semibold py-2 rounded-lg hover:bg-yellow-500 transition-all duration-300 disabled:opacity-50"
+            className="w-full bg-yellow-500 text-purple-800 font-semibold py-2 rounded-lg hover:bg-yellow-600 transition-all duration-300 disabled:opacity-50"
             disabled={loading}
           >
             {loading ? 'Logging in...' : 'Login'}
