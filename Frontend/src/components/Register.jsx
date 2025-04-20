@@ -18,6 +18,11 @@ const Register = () => {
   });
 
   const [showPassword, setShowPassword] = useState(false);
+  const [fadeIn, setFadeIn] = useState(false);
+
+  React.useEffect(() => {
+    setFadeIn(true);
+  }, []);
 
   const handleChange = (e) => {
     setFormData((prev) => ({
@@ -46,13 +51,12 @@ const Register = () => {
 
     const result = await dispatch(registerUser(formData));
     if (result.payload?.token) {
-      dispatch(setUser(result.payload.user)); // ✅ use Redux
-
+      dispatch(setUser(result.payload.user));
       localStorage.setItem('token', result.payload.token);
       localStorage.setItem('user', JSON.stringify(result.payload.user));
       localStorage.setItem('role', result.payload.user.role);
 
-      toast.success('Registration successful!');
+      toast.success('🎉 Registration successful!');
       setTimeout(() => navigate('/dashboard'), 1500);
     } else {
       toast.error(result.payload?.message || 'Registration failed');
@@ -60,78 +64,115 @@ const Register = () => {
   };
 
   return (
-    <div className="flex justify-center items-center h-screen bg-gray-100">
-      <form
-        onSubmit={handleSubmit}
-        className="bg-white p-6 rounded shadow-md w-full max-w-sm"
+    <div className="relative min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-100 via-yellow-50 to-purple-200 overflow-hidden">
+      <ToastContainer />
+      <div className="absolute top-0 left-0 w-full h-full z-0 pointer-events-none">
+        {[...Array(30)].map((_, i) => (
+          <div
+            key={i}
+            className="absolute bg-white rounded-full opacity-70 animate-ping"
+            style={{
+              width: `${Math.random() * 4 + 2}px`,
+              height: `${Math.random() * 4 + 2}px`,
+              top: `${Math.random() * 100}%`,
+              left: `${Math.random() * 100}%`,
+              animationDuration: `${Math.random() * 3 + 2}s`,
+            }}
+          />
+        ))}
+      </div>
+
+      <div
+        className={`relative z-10 w-full max-w-md p-8 bg-white shadow-2xl rounded-xl transform transition-all duration-700 ${
+          fadeIn ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
+        }`}
       >
-        <ToastContainer />
-        <h2 className="text-2xl font-bold mb-4 text-center">Register</h2>
+        <h2 className="text-3xl font-bold text-center mb-6 text-purple-700 tracking-wide">
+          HomeHunt Register
+        </h2>
 
-        <input
-          type="text"
-          name="name"
-          placeholder="Name"
-          className="w-full border p-2 mb-4 rounded"
-          value={formData.name}
-          onChange={handleChange}
-          required
-        />
-
-        <input
-          type="email"
-          name="email"
-          placeholder="Email"
-          className="w-full border p-2 mb-4 rounded"
-          value={formData.email}
-          onChange={handleChange}
-          required
-        />
-
-        <div className="relative mb-4">
+        <form onSubmit={handleSubmit} className="space-y-5">
           <input
-            type={showPassword ? 'text' : 'password'}
-            name="password"
-            placeholder="Password"
-            className="w-full border p-2 pr-10 rounded"
-            value={formData.password}
+            type="text"
+            name="name"
+            placeholder="👤 Name"
+            value={formData.name}
             onChange={handleChange}
+            className="w-full border border-purple-300 px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-400"
             required
           />
+
+          <input
+            type="email"
+            name="email"
+            placeholder="📧 Email"
+            value={formData.email}
+            onChange={handleChange}
+            className="w-full border border-purple-300 px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-400"
+            required
+          />
+
+          <div className="relative">
+            <input
+              type={showPassword ? 'text' : 'password'}
+              name="password"
+              placeholder="🔒 Password"
+              value={formData.password}
+              onChange={handleChange}
+              className="w-full border border-purple-300 px-4 py-2 pr-10 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-400"
+              required
+            />
+            <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              className="absolute top-1/2 right-3 transform -translate-y-1/2 text-sm text-purple-600 hover:underline"
+            >
+              {showPassword ? '🙈 Hide' : '👁️ Show'}
+            </button>
+          </div>
+
+          {/* 🎯 Toggle buttons for role */}
+          <div className="flex justify-center gap-4 mb-4">
+            <button
+              type="button"
+              onClick={() => setFormData({ ...formData, role: 'user' })}
+              className={`px-4 py-2 rounded-full border font-medium transition-all duration-300 transform hover:scale-105 ${
+                formData.role === 'user'
+                  ? 'bg-yellow-400 text-purple-800 border-yellow-400'
+                  : 'bg-white text-yellow-600 border-yellow-300'
+              }`}
+            >
+              👤 User
+            </button>
+            <button
+              type="button"
+              onClick={() => setFormData({ ...formData, role: 'admin' })}
+              className={`px-4 py-2 rounded-full border font-medium transition-all duration-300 transform hover:scale-105 ${
+                formData.role === 'admin'
+                  ? 'bg-yellow-400 text-purple-800 border-yellow-400'
+                  : 'bg-white text-yellow-600 border-yellow-300'
+              }`}
+            >
+              🛠️ Admin
+            </button>
+          </div>
+
           <button
-            type="button"
-            onClick={() => setShowPassword(!showPassword)}
-            className="absolute top-2 right-3 text-sm text-blue-600"
+            type="submit"
+            className="w-full bg-yellow-400 text-purple-800 font-semibold py-2 rounded-lg hover:bg-yellow-500 transition-all duration-300 disabled:opacity-50"
+            disabled={loading}
           >
-            {showPassword ? 'Hide' : 'Show'}
+            {loading ? 'Registering...' : '📝 Register'}
           </button>
-        </div>
 
-        <select
-          name="role"
-          value={formData.role}
-          onChange={handleChange}
-          className="w-full border p-2 mb-4 rounded"
-        >
-          <option value="user">User</option>
-          <option value="admin">Admin</option>
-        </select>
-
-        <button
-          type="submit"
-          className="w-full bg-green-600 text-white py-2 rounded hover:bg-green-700 disabled:opacity-50"
-          disabled={loading}
-        >
-          {loading ? 'Registering...' : 'Register'}
-        </button>
-
-        <p className="mt-4 text-center text-sm">
-          Already have an account?{' '}
-          <Link to="/login" className="text-blue-600 hover:underline">
-            Login
-          </Link>
-        </p>
-      </form>
+          <p className="text-center text-sm text-gray-600">
+            Already have an account?{' '}
+            <Link to="/login" className="text-purple-700 hover:underline font-medium">
+              Login here
+            </Link>
+          </p>
+        </form>
+      </div>
     </div>
   );
 };

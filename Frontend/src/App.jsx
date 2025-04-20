@@ -11,6 +11,7 @@ import AddProperty from './components/AddProperty';
 import Navbar from './components/Navbar';
 import unauthorized from './components/unauthorized'; 
 import About from './components/About/About'; // Import the About component
+import Contact from './components/Contact/Contact';
 const App = () => {
   const dispatch = useDispatch();
 
@@ -25,7 +26,7 @@ const App = () => {
         {/* Default route now directly renders Dashboard */}
         <Route path="/" element={<Dashboard />} />
         <Route path = "/about" element={<About />} />
-        
+        <Route path = "/contact" element={<Contact />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         

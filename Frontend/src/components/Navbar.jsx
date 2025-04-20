@@ -13,6 +13,8 @@ const Navbar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [avatarOpen, setAvatarOpen] = useState(false);
   const dropdownRef = useRef(null);
+  const menuRef = useRef(null);
+  const [menuHeight, setMenuHeight] = useState(0);
 
   useEffect(() => {
     const handleStorageChange = () => {
@@ -28,11 +30,18 @@ const Navbar = () => {
 
     window.addEventListener('storage', handleStorageChange);
     document.addEventListener('mousedown', handleClickOutside);
+
     return () => {
       window.removeEventListener('storage', handleStorageChange);
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, []);
+
+  useEffect(() => {
+    if (menuRef.current) {
+      setMenuHeight(menuRef.current.scrollHeight);
+    }
+  }, [menuOpen]);
 
   const handleLogout = () => {
     localStorage.removeItem('token');
@@ -49,27 +58,28 @@ const Navbar = () => {
   return (
     <nav className="bg-yellow-400 shadow-md px-4 sm:px-8 py-4">
       <div className="flex justify-between items-center">
-        {/* Brand */}
-        <Link to="/" className="text-purple-700 text-2xl font-bold flex items-center gap-2">
+        {/* Logo */}
+        <Link to="/" className="text-purple-700 text-xl sm:text-2xl font-bold flex items-center gap-2">
           <span role="img" aria-label="home">🏠</span> HOMEHUNT
         </Link>
 
-        {/* Hamburger for mobile */}
-        <button className="sm:hidden text-purple-700" onClick={toggleMenu}>
-          {menuOpen ? <X size={24} /> : <Menu size={24} />}
-        </button>
-
         {/* Desktop Nav */}
-        <div className="hidden sm:flex items-center gap-4 text-purple-800 font-medium text-sm sm:text-base">
-          {token ? (
+        <div className="hidden sm:flex items-center gap-5 text-purple-800 font-medium text-sm sm:text-base">
+          <Link to="/about" className="hover:text-purple-900 transition">About</Link>
+          <Link to="/properties" className="hover:text-purple-900 transition">Properties</Link>
+          <Link to="/contact" className="hover:text-purple-900 transition">Contact</Link>
+
+          {!token ? (
             <>
-              <Link to="/dashboard" className="hover:text-purple-900 transition">Dashboard</Link>
-              <Link to="/properties" className="hover:text-purple-900 transition">Properties</Link>
+              <Link to="/login" className="hover:text-purple-900 transition">Login</Link>
+              <Link to="/register" className="hover:text-purple-900 transition">Register</Link>
+            </>
+          ) : (
+            <>
               {user?.role === 'admin' && (
                 <Link to="/add-property" className="hover:text-purple-900 transition">Add</Link>
               )}
 
-              {/* Avatar dropdown */}
               <div className="relative" ref={dropdownRef}>
                 <button
                   onClick={toggleAvatar}
@@ -100,47 +110,52 @@ const Navbar = () => {
                 )}
               </div>
             </>
-          ) : (
-            <>
-              <Link to="/login" className="hover:text-purple-900 transition">Login</Link>
-              <Link to="/register" className="hover:text-purple-900 transition">Register</Link>
-            </>
           )}
-
-          {/* About link */}
-          <Link to="/about" className="hover:text-purple-900 transition">About</Link>
         </div>
+
+        {/* Hamburger Icon */}
+        <button className="sm:hidden text-purple-700" onClick={toggleMenu}>
+          {menuOpen ? <X size={24} /> : <Menu size={24} />}
+        </button>
       </div>
 
       {/* Mobile Nav */}
-      {menuOpen && (
-        <div className="sm:hidden mt-4 flex flex-col gap-3 text-purple-800 font-medium text-base">
-          {token ? (
+      <div
+        className={`sm:hidden overflow-hidden transition-all duration-300 ease-in-out`}
+        style={{ maxHeight: menuOpen ? `${menuHeight + 100}px` : '0px' }} // Added extra buffer
+      >
+        <div
+          ref={menuRef}
+          className="mt-4 flex flex-col gap-4 px-2 pb-4 text-purple-800 font-medium text-base transition-opacity duration-300 ease-in-out opacity-100 transform scale-100"
+        >
+          <Link to="/about" onClick={toggleMenu} className="hover:text-purple-900 py-2">About</Link>
+          <Link to="/properties" onClick={toggleMenu} className="hover:text-purple-900 py-2">Properties</Link>
+          <Link to="/contact" onClick={toggleMenu} className="hover:text-purple-900 py-2">Contact</Link>
+
+          {!token ? (
             <>
-              <Link to="/dashboard" onClick={toggleMenu} className="hover:text-purple-900">Dashboard</Link>
-              <Link to="/properties" onClick={toggleMenu} className="hover:text-purple-900">Properties</Link>
+              <Link to="/login" onClick={toggleMenu} className="hover:text-purple-900 py-2">Login</Link>
+              <Link to="/register" onClick={toggleMenu} className="hover:text-purple-900 py-2">Register</Link>
+            </>
+          ) : (
+            <>
               {user?.role === 'admin' && (
-                <Link to="/add-property" onClick={toggleMenu} className="hover:text-purple-900">Add</Link>
+                <Link to="/add-property" onClick={toggleMenu} className="hover:text-purple-900 py-2">Add</Link>
               )}
-              <Link to="/profile" onClick={toggleMenu} className="hover:text-purple-900">Profile</Link>
+              <Link to="/profile" onClick={toggleMenu} className="hover:text-purple-900 py-2">Profile</Link>
               <button
-                onClick={handleLogout}
-                className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
+                onClick={() => {
+                  handleLogout();
+                  setMenuOpen(false);
+                }}
+                className="bg-red-500 text-white px-3 py-2 rounded hover:bg-red-600 mt-1"
               >
                 Logout
               </button>
             </>
-          ) : (
-            <>
-              <Link to="/login" onClick={toggleMenu} className="hover:text-purple-900">Login</Link>
-              <Link to="/register" onClick={toggleMenu} className="hover:text-purple-900">Register</Link>
-            </>
           )}
-
-          {/* About link for mobile */}
-          <Link to="/about" onClick={toggleMenu} className="hover:text-purple-900">About</Link>
         </div>
-      )}
+      </div>
     </nav>
   );
 };

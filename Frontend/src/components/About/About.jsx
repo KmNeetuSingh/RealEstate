@@ -8,10 +8,9 @@ const About = () => {
       <div
         className="w-full h-[250px] bg-cover bg-center flex items-center justify-center text-white text-3xl font-semibold"
         style={{
-          backgroundImage: `url('/src/assets/about-bg.png')`, // replace with your actual image path
+          backgroundImage: `url('/src/assets/interior.avif')`, // replace with your actual image path
         }}
       >
-        About Us
       </div>
 
       {/* Title */}
