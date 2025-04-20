@@ -1,11 +1,13 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 
-// ✅ Use environment variable
 const API_URL = import.meta.env.VITE_API_URL;
 
+const storedUser = JSON.parse(localStorage.getItem('user'));
+
 const initialState = {
-  user: JSON.parse(localStorage.getItem('user')) || null,
+  user: storedUser || null,
+  isAdmin: storedUser?.role === 'admin' || false,
   loading: false,
   error: null,
 };
@@ -63,18 +65,21 @@ const authSlice = createSlice({
   reducers: {
     setUser: (state, action) => {
       state.user = action.payload;
+      state.isAdmin = action.payload?.role === 'admin';
     },
     logout: (state) => {
       state.user = null;
+      state.isAdmin = false;
       state.error = null;
       localStorage.removeItem('user');
       localStorage.removeItem('token');
-      localStorage.removeItem('role');
     },
     loadUserFromStorage: (state) => {
       const storedUser = localStorage.getItem('user');
       if (storedUser) {
-        state.user = JSON.parse(storedUser);
+        const user = JSON.parse(storedUser);
+        state.user = user;
+        state.isAdmin = user.role === 'admin';
       }
     },
   },
@@ -89,6 +94,7 @@ const authSlice = createSlice({
       .addCase(registerUser.fulfilled, (state, action) => {
         state.loading = false;
         state.user = action.payload.user;
+        state.isAdmin = action.payload.user.role === 'admin';
       })
       .addCase(registerUser.rejected, (state, action) => {
         state.loading = false;
@@ -103,6 +109,7 @@ const authSlice = createSlice({
       .addCase(loginUser.fulfilled, (state, action) => {
         state.loading = false;
         state.user = action.payload.user;
+        state.isAdmin = action.payload.user.role === 'admin';
       })
       .addCase(loginUser.rejected, (state, action) => {
         state.loading = false;
@@ -117,6 +124,7 @@ const authSlice = createSlice({
       .addCase(getProfile.fulfilled, (state, action) => {
         state.loading = false;
         state.user = action.payload.user;
+        state.isAdmin = action.payload.user.role === 'admin';
       })
       .addCase(getProfile.rejected, (state, action) => {
         state.loading = false;
