@@ -2,8 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { loginUser, setUser } from '../features/auth/authSlice';
 import { useNavigate } from 'react-router-dom';
-import { toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
 
 const Login = () => {
   const dispatch = useDispatch();
@@ -47,15 +45,13 @@ const Login = () => {
       localStorage.setItem('user', JSON.stringify(response.payload.user));
       localStorage.setItem('token', response.payload.token);
       localStorage.setItem('role', response.payload.user.role);
-      toast.success(`🎉 Welcome ${response.payload.user.name || 'back'}!`);
       navigate('/dashboard');
-    } else {
-      toast.error('❌ Login failed. Please check your credentials.');
     }
   };
 
   return (
     <div className="relative min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-100 via-yellow-50 to-purple-200 overflow-hidden">
+      {/* ⭐ Star animations */}
       <div className="absolute top-0 left-0 w-full h-full z-0 pointer-events-none">
         {[...Array(30)].map((_, i) => (
           <div
@@ -72,6 +68,7 @@ const Login = () => {
         ))}
       </div>
 
+      {/* 🚨 Backend Notice */}
       {showBackendNotice && (
         <div className="absolute top-5 left-1/2 transform -translate-x-1/2 bg-yellow-100 border border-yellow-400 text-yellow-800 px-4 py-2 rounded shadow transition duration-300 animate-pulse z-50">
           ⚠️ Backend is hosted on Render. If inactive, it may take ~30 sec to wake up.
@@ -97,72 +94,50 @@ const Login = () => {
           <input
             type="email"
             name="email"
-            placeholder="📧 Email"
+            placeholder="Email"
             value={formData.email}
             onChange={handleChange}
-            className="w-full border border-purple-300 px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-400"
+            className="w-full border border-purple-300 px-4 py-2 rounded-lg transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-purple-400"
             required
+            autoComplete="email"
           />
 
           <div className="relative">
             <input
               type={showPassword ? 'text' : 'password'}
               name="password"
-              placeholder="🔒 Password"
+              placeholder="Password"
               value={formData.password}
               onChange={handleChange}
-              className="w-full border border-purple-300 px-4 py-2 pr-10 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-400"
+              className="w-full border border-purple-300 px-4 py-2 pr-10 rounded-lg transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-purple-400"
               required
+              autoComplete="current-password"
             />
             <button
               type="button"
               onClick={() => setShowPassword(!showPassword)}
               className="absolute top-1/2 right-3 transform -translate-y-1/2 text-sm text-purple-600 hover:underline"
             >
-              {showPassword ? '🙈 Hide' : '👁️ Show'}
+              {showPassword ? 'Hide' : 'Show'}
             </button>
           </div>
 
-          {/* 🎯 Toggle buttons for role */}
-          <div className="flex justify-center gap-4 mb-4">
-            <button
-              type="button"
-              onClick={() => setFormData({ ...formData, role: 'user' })}
-              className={`px-4 py-2 rounded-full border font-medium transition-all duration-300 transform hover:scale-105 ${
-                formData.role === 'user'
-                  ? 'bg-yellow-400 text-purple-800 border-yellow-400'
-                  : 'bg-white text-yellow-600 border-yellow-300'
-              }`}
-            >
-              👤 User
-            </button>
-            <button
-              type="button"
-              onClick={() => setFormData({ ...formData, role: 'admin' })}
-              className={`px-4 py-2 rounded-full border font-medium transition-all duration-300 transform hover:scale-105 ${
-                formData.role === 'admin'
-                  ? 'bg-yellow-400 text-purple-800 border-yellow-400'
-                  : 'bg-white text-yellow-600 border-yellow-300'
-              }`}
-            >
-              🛠️ Admin
-            </button>
-          </div>
-
-          {/* Optional: Remember Me */}
-          {/* 
-          <div className="flex items-center gap-2">
-            <input type="checkbox" id="remember" className="form-checkbox" />
-            <label htmlFor="remember" className="text-sm text-gray-700">Remember me</label>
-          </div>
-          */}
+          <select
+            name="role"
+            value={formData.role}
+            onChange={handleChange}
+            className="w-full border border-purple-300 px-4 py-2 rounded-lg transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-purple-400"
+          >
+            <option value="user">User</option>
+            <option value="admin">Admin</option>
+          </select>
 
           <button
             type="submit"
             className="w-full bg-yellow-400 text-purple-800 font-semibold py-2 rounded-lg hover:bg-yellow-500 transition-all duration-300 disabled:opacity-50"
             disabled={loading}
           >
-            {loading ? 'Logging in...' : '🚀 Login'}
+            {loading ? 'Logging in...' : 'Login'}
           </button>
         </form>
       </div>
