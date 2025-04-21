@@ -8,7 +8,7 @@ const About = () => {
       <div
         className="w-full h-[250px] bg-cover bg-center flex items-center justify-center text-white text-3xl font-semibold"
         style={{
-          backgroundImage: `url('/src/assets/interior.avif')`,
+          backgroundImage: `url('https://i.pinimg.com/736x/96/68/ca/9668cad592fc0753c7cc2ea140a4dbe6.jpg')`,
         }}
       >
       </div>
