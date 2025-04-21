@@ -1,2 +1,3 @@
 node_modules
+# Ignore .env files as they often contain sensitive configuration data like API keys or database credentials
 .env
