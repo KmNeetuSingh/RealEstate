@@ -64,7 +64,7 @@ const Register = () => {
   };
 
   return (
-    <div className="relative min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-100 via-yellow-50 to-purple-200 overflow-hidden">
+    <div className="relative min-h-screen flex items-center justify-center bg-gradient-to-br from-yellow-100 via-yellow-200 to-amber-100 overflow-hidden">
       <ToastContainer />
       <div className="absolute top-0 left-0 w-full h-full z-0 pointer-events-none">
         {[...Array(30)].map((_, i) => (
@@ -131,7 +131,6 @@ const Register = () => {
             </button>
           </div>
 
-          {/* 🎯 Toggle buttons for role */}
           <div className="flex justify-center gap-4 mb-4">
             <button
               type="button"
